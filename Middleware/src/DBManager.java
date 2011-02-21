@@ -15,8 +15,10 @@ public class DBManager {
 
 
     String SQLServerIP = "localhost";
-
-    public String getPassword(String UID){
+	String remoteUserID = "remote";
+	String remoteUserPWD = "remote_pass";
+    
+	public String getPassword(String UID){
 
         String msgString = null;        // String for displaying non-error messages
         String SQLstatement = null;     // String for building SQL queries
@@ -29,8 +31,7 @@ public class DBManager {
 
         String password = null;
 		
-		String remoteUserID = "remote";
-		String remoteUserPWD = "remote_pass";
+		
 		
         if(UID!=null){
             try{
@@ -123,20 +124,17 @@ public class DBManager {
                     
                 while (res.next())
                 {
-                    msgString.add(res.getString(1));
+					msgString.add(res.getString(1)+" : "+res.getString(2)+" : $"+res.getString(4)+" : "+res.getString(3)+" units in stock");
+					/*
                     msgString.add(" : ");
                     msgString.add(res.getString(2));
                     msgString.add(" : $");
                     msgString.add(res.getString(4));
                     msgString.add(" : ");
                     msgString.add(res.getString(3));
-                    msgString.add(" units in stock");
-
+                    msgString.add(" units in stock")
                     /*
-                    msgString = res.getString(1) + " : " + res.getString(2) +
-                            " : $"+ res.getString(4) + " : " + res.getString(3)
-                            + " units in stock";
-                   // jTextArea1.append(msgString+"\n");
+                    // jTextArea1.append(msgString+"\n");
 */
                 } // while
 
@@ -195,8 +193,7 @@ public class DBManager {
                 {
 
                     System.out.println("DBManager RES ===>"+res.getString(1));
-                    //Collections.addAll(msgString, res.getString(1)," : ",res.getString(2)," : $",res.getString(4)," : ",res.getString(3)," units in stock");
-
+                   
                     msgString.add(res.getString(1));
                     msgString.add(" : ");
                     msgString.add(res.getString(2));
@@ -269,6 +266,8 @@ public Vector<String> getShrubs(){
 
                     while (res.next())
                 {
+					msgString.add(res.getString(1)+" : "+res.getString(2)+" : $"+res.getString(4)+" : "+res.getString(3)+" units in stock");
+					/*
                     msgString.add(res.getString(1));
                     msgString.add(" : ");
                     msgString.add(res.getString(2));
@@ -277,12 +276,9 @@ public Vector<String> getShrubs(){
                     msgString.add(" : ");
                     msgString.add(res.getString(3));
                     msgString.add(" units in stock");
-
+					*/
                         /*
-                    msgString = res.getString(1) + " : " + res.getString(2) +
-                            " : $"+ res.getString(4) + " : " + res.getString(3)
-                            + " units in stock";
-                   // jTextArea1.append(msgString+"\n");
+                    // jTextArea1.append(msgString+"\n");
 */
                 } // while
 
