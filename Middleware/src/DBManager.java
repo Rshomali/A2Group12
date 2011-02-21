@@ -1,3 +1,5 @@
+package dbmanager;
+
 
 import java.sql.*;
 import java.util.Calendar;
@@ -17,7 +19,7 @@ public class DBManager {
     String SQLServerIP = "localhost";
 	String remoteUserID = "remote";
 	String remoteUserPWD = "remote_pass";
-    
+
 	public String getPassword(String UID){
 
         String msgString = null;        // String for displaying non-error messages
@@ -25,14 +27,14 @@ public class DBManager {
         Connection DBConn = null;       // MySQL connection handle
         String errString = null;        // String for displaying errors
         Boolean connectError = false;   // Error flag
-        
+
         ResultSet res = null;               // SQL query result set pointer
         Statement s = null;                 // SQL statement pointer
 
         String password = null;
-		
-		
-		
+
+
+
         if(UID!=null){
             try{
                               //load JDBC driver class for MySQL
@@ -118,13 +120,13 @@ public class DBManager {
                 try
                 {
                     s = DBConn.createStatement();
-               
+
                     res = s.executeQuery( "Select * from seeds");
 
-                    
+
                 while (res.next())
                 {
-					msgString.add(res.getString(1)+" : "+res.getString(2)+" : $"+res.getString(4)+" : "+res.getString(3)+" units in stock");
+                    msgString.add(res.getString(1)+" : "+res.getString(2)+" : $"+res.getString(4)+" : "+res.getString(3)+" units in stock\n");
 					/*
                     msgString.add(" : ");
                     msgString.add(res.getString(2));
@@ -133,9 +135,7 @@ public class DBManager {
                     msgString.add(" : ");
                     msgString.add(res.getString(3));
                     msgString.add(" units in stock")
-                    /*
-                    // jTextArea1.append(msgString+"\n");
-*/
+  */
                 } // while
 
                     //System.out.println(res.getString(1));
@@ -192,8 +192,8 @@ public class DBManager {
                     while (res.next())
                 {
 
-                    System.out.println("DBManager RES ===>"+res.getString(1));
-                   
+                    msgString.add(res.getString(1)+" : "+res.getString(2)+" : $"+res.getString(4)+" : "+res.getString(3)+" units in stock\n");
+/*
                     msgString.add(res.getString(1));
                     msgString.add(" : ");
                     msgString.add(res.getString(2));
@@ -203,11 +203,6 @@ public class DBManager {
                     msgString.add(res.getString(3));
                     msgString.add(" units in stock");
 
-                    /*
-                    msgString = res.getString(1) + " : " + res.getString(2) +
-                            " : $"+ res.getString(4) + " : " + res.getString(3)
-                            + " units in stock";
-                   // jTextArea1.append(msgString+"\n");
                     */
                 } // while
 
@@ -222,12 +217,11 @@ public class DBManager {
         }
 
 
-        System.out.println("DBManager:: return==>"+msgString);
         return msgString;
     }
 public Vector<String> getShrubs(){
 
-        
+
          Vector<String> msgString = new Vector<String>();        // String for displaying non-error messages
         String SQLstatement = null;     // String for building SQL queries
         Connection DBConn = null;       // MySQL connection handle
@@ -266,7 +260,7 @@ public Vector<String> getShrubs(){
 
                     while (res.next())
                 {
-					msgString.add(res.getString(1)+" : "+res.getString(2)+" : $"+res.getString(4)+" : "+res.getString(3)+" units in stock");
+                    msgString.add(res.getString(1)+" : "+res.getString(2)+" : $"+res.getString(4)+" : "+res.getString(3)+" units in stock\n");
 					/*
                     msgString.add(res.getString(1));
                     msgString.add(" : ");
@@ -277,9 +271,7 @@ public Vector<String> getShrubs(){
                     msgString.add(res.getString(3));
                     msgString.add(" units in stock");
 					*/
-                        /*
-                    // jTextArea1.append(msgString+"\n");
-*/
+                    
                 } // while
 
                     //System.out.println(res.getString(1));
@@ -294,7 +286,7 @@ public Vector<String> getShrubs(){
         return msgString;
     }
 
-    
+
     public void writeOrder(String order_date, String first_name,
             String last_name, String address, String phone, float total_cost,
             int shipped, Vector<String> product_id,
@@ -378,8 +370,8 @@ public Vector<String> getShrubs(){
 
             String dateTimeStamp = TheMonth + "/" + TheDay + "/" + TheYear + " "
                     + TheHour + ":" + TheMinute  + ":" + TheSecond;
-            
-             
+
+
 
             // Get the order data
             try
@@ -437,11 +429,7 @@ public Vector<String> getShrubs(){
 
             } //execute error check
 /**********************************************************/
-        // Now, if there is no connect or SQL execution errors at this point,
-        // then we have an order added to the orderinfo::orders table, and a
-        // new ordersXXXX table created. Here we insert the list of items in
-        // jTextArea2 into the ordersXXXX table.
-
+       
         if ( !connectError && !executeError )
         {
             // Now we create a table that contains the itemized list
@@ -449,11 +437,7 @@ public Vector<String> getShrubs(){
 
             for (int i = 0; i < product_id.size(); i++ )
             {
-                // jTextArea3.append("\nitem #:" + i + ": " + items[i]);
-
-                // Check just to make sure that a blank line was not stuck in
-                // there... just in case.
-                
+        
                 if (description.elementAt(i)!=null )
                 {
                     SQLstatement = ( "INSERT INTO " + orderTableName +
@@ -464,16 +448,14 @@ public Vector<String> getShrubs(){
                     {
                         executeUpdateVal = s.executeUpdate(SQLstatement);
                         msgString =  "\nORDER SUBMITTED FOR: " + firstName + " " + lastName;
-                    //    jTextArea3.setText(msgString);
-
+        
                         // Clean up the display
 
                     } catch (Exception e) {
 
                         errString =  "\nProblem with inserting into table " + orderTableName +
                             ":: " + e;
-                     //   jTextArea3.append(errString);
-
+        
                     } // try
 
                 } // line length check
@@ -516,7 +498,7 @@ public Vector<String> getShrubs(){
 
         String orderTableName = "orders";
         String ColumnShipped = "shipped";
-        
+
         if (orderNumber != null)
         {
             try
@@ -574,7 +556,7 @@ public Vector<String> getShrubs(){
                     } // while
 
             if(existedOrderNumber==null) return false;
-            
+
              try
             {
                 s = DBConn.createStatement();
@@ -587,7 +569,7 @@ public Vector<String> getShrubs(){
                 executeError = true;
 
             }
-            
+
         }
         return true;
     }
