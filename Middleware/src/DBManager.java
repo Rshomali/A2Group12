@@ -28,17 +28,20 @@ public class DBManager {
         Statement s = null;                 // SQL statement pointer
 
         String password = null;
-
+		
+		String remoteUserID = "remote";
+		String remoteUserPWD = "remote_pass";
+		
         if(UID!=null){
             try{
                               //load JDBC driver class for MySQL
                     Class.forName( "com.mysql.jdbc.Driver" );
                                       //define the data source
                     String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/userDB";
-                    //create a connection to the db - note the default account is "remote"
-                    //and the password is "remote_pass" - you will have to set this
+                    //create a connection to the db - note the default account is remoteUserID
+                    //and the password is remoteUserPWD - you will have to set this
                     //account up in your database
-                    DBConn = DriverManager.getConnection(sourceURL,"remote2","remote_pass");
+                    DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
 
                 } catch (Exception e) {
 
@@ -96,10 +99,10 @@ public class DBManager {
                     Class.forName( "com.mysql.jdbc.Driver" );
                                       //define the data source
                     String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/inventory";
-                    //create a connection to the db - note the default account is "remote"
-                    //and the password is "remote_pass" - you will have to set this
+                    //create a connection to the db - note the default account is remoteUserID
+                    //and the password is remoteUserPWD - you will have to set this
                     //account up in your database
-                    DBConn = DriverManager.getConnection(sourceURL,"remote2","remote_pass");
+                    DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
 
                 } catch (Exception e) {
 
@@ -121,13 +124,13 @@ public class DBManager {
                 while (res.next())
                 {
                     msgString.add(res.getString(1));
-                    //msgString.add(2, " : ");
+                    msgString.add(" : ");
                     msgString.add(res.getString(2));
-                    //msgString.add(4, " : $");
+                    msgString.add(" : $");
                     msgString.add(res.getString(4));
-                    //msgString.add(6, " : ");
+                    msgString.add(" : ");
                     msgString.add(res.getString(3));
-                    //msgString.add(8, " units in stock");
+                    msgString.add(" units in stock");
 
                     /*
                     msgString = res.getString(1) + " : " + res.getString(2) +
@@ -167,10 +170,10 @@ public class DBManager {
                     Class.forName( "com.mysql.jdbc.Driver" );
                                       //define the data source
                     String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/inventory";
-                    //create a connection to the db - note the default account is "remote"
-                    //and the password is "remote_pass" - you will have to set this
+                    //create a connection to the db - note the default account is remoteUserID
+                    //and the password is remoteUserPWD - you will have to set this
                     //account up in your database
-                    DBConn = DriverManager.getConnection(sourceURL,"remote2","remote_pass");
+                    DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
 
                 } catch (Exception e) {
 
@@ -195,13 +198,13 @@ public class DBManager {
                     //Collections.addAll(msgString, res.getString(1)," : ",res.getString(2)," : $",res.getString(4)," : ",res.getString(3)," units in stock");
 
                     msgString.add(res.getString(1));
-                    //msgString.add(" : ");
+                    msgString.add(" : ");
                     msgString.add(res.getString(2));
-                    //msgString.add(4, " : $");
+                    msgString.add(" : $");
                     msgString.add(res.getString(4));
-                    //msgString.add(6, " : ");
+                    msgString.add(" : ");
                     msgString.add(res.getString(3));
-                    //msgString.add(8, " units in stock");
+                    msgString.add(" units in stock");
 
                     /*
                     msgString = res.getString(1) + " : " + res.getString(2) +
@@ -243,10 +246,10 @@ public Vector<String> getShrubs(){
                     Class.forName( "com.mysql.jdbc.Driver" );
                                       //define the data source
                     String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/inventory";
-                    //create a connection to the db - note the default account is "remote"
-                    //and the password is "remote_pass" - you will have to set this
+                    //create a connection to the db - note the default account is remoteUserID
+                    //and the password is remoteUserPWD - you will have to set this
                     //account up in your database
-                    DBConn = DriverManager.getConnection(sourceURL,"remote2","remote_pass");
+                    DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
 
                 } catch (Exception e) {
 
@@ -267,13 +270,13 @@ public Vector<String> getShrubs(){
                     while (res.next())
                 {
                     msgString.add(res.getString(1));
-                    //msgString.add(2, " : ");
+                    msgString.add(" : ");
                     msgString.add(res.getString(2));
-                    //msgString.add(4, " : $");
+                    msgString.add(" : $");
                     msgString.add(res.getString(4));
-                    //msgString.add(6, " : ");
+                    msgString.add(" : ");
                     msgString.add(res.getString(3));
-                    //msgString.add(8, " units in stock");
+                    msgString.add(" units in stock");
 
                         /*
                     msgString = res.getString(1) + " : " + res.getString(2) +
@@ -343,11 +346,11 @@ public Vector<String> getShrubs(){
 
                 msgString = ">> Establishing connection with: " + sourceURL + "...";
 
-                //create a connection to the db - note the default account is "remote"
-                //and the password is "remote_pass" - you will have to set this
+                //create a connection to the db - note the default account is remoteUserID
+                //and the password is remoteUserPWD - you will have to set this
                 //account up in your database
 
-                DBConn = DriverManager.getConnection(sourceURL,"remote2","remote_pass");
+                DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
 
             } catch (Exception e) {
 
@@ -536,11 +539,11 @@ public Vector<String> getShrubs(){
                 msgString = ">> Establishing connection with: " + sourceURL + "...";
                 //jTextArea3.append("\n"+msgString);
 
-                //create a connection to the db - note the default account is "remote"
-                //and the password is "remote_pass" - you will have to set this
+                //create a connection to the db - note the default account is remoteUserID
+                //and the password is remoteUserPWD - you will have to set this
                 //account up in your database
 
-                DBConn = DriverManager.getConnection(sourceURL,"remote2","remote_pass");
+                DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
 
             } catch (Exception e) {
 
