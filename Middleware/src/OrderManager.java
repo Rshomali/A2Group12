@@ -48,6 +48,9 @@ public class OrderManager {
            System.out.println("Error calling OrderManager.addOrder: " + e);
        }
 
+       HistoryLogger logger = HistoryLogger.getInstance();
+       logger.logOrder(UID, order_date, shipped);
+
     }
 
 }

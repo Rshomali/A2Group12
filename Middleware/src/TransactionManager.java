@@ -71,7 +71,10 @@ public class TransactionManager extends UnicastRemoteObject implements ITransact
 
 
    public static void main(String[] args) {
-        // create new server thread
+
+       HistoryLogger logger = HistoryLogger.getInstance();
+
+       // create new server thread
                 if (System.getSecurityManager() == null) {
             System.setSecurityManager(new RMISecurityManager());
         }

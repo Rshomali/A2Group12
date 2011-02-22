@@ -1,5 +1,6 @@
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 
 
@@ -23,6 +24,8 @@ public class ShipmentManager {
                // Logger.getLogger(ShipmentManager.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+       HistoryLogger logger = HistoryLogger.getInstance();
+       logger.logShipping((new Timestamp(new java.util.Date().getTime())).toString(), Integer.parseInt(orderNumber));
     }
 
 }

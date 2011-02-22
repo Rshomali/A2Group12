@@ -1,0 +1,5 @@
+INFO - 2011-02-21 12:00:00    user id:test  -log in
+INFO - 2011-02-22 00:02:57.966    user id:test  -log in
+INFO - 2011-02-22 00:03:13.386    user id:test  -log in
+INFO - 2011-02-22 00:10:11.623    user id:test  -log in
+INFO - 2011-02-22 00:10:16.985    user id:test  -log in

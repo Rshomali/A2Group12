@@ -12,15 +12,19 @@ public class HistoryLogger {
 
         HistoryLogger historyLogger = new HistoryLogger();
         
-        historyLogger.logLogin("345", new Timestamp(new java.util.Date().getTime()));
-        historyLogger.logLogout("678", new Timestamp(new java.util.Date().getTime()));
+        //historyLogger.logLogin("345", new Timestamp(new java.util.Date().getTime()));
+        //historyLogger.logLogout("678", new Timestamp(new java.util.Date().getTime()));
        
-        historyLogger.logShipping(new Timestamp(new java.util.Date().getTime()), 001);
-        historyLogger.logOrder("123", new Timestamp(new java.util.Date().getTime()), 001);
+       // historyLogger.logShipping(new Timestamp(new java.util.Date().getTime()), 001);
+        //historyLogger.logOrder("123", new Timestamp(new java.util.Date().getTime()), 001);
     }
 
 
-    
+
+    // Private constructor prevents instantiation from other classes
+
+    private static final HistoryLogger INSTANCE = new HistoryLogger();
+
     private Logger loginLogger = Logger.getLogger("loginLogger");
     private Logger orderLogger = Logger.getLogger("orderLogger");
     private Logger shipmentLogger = Logger.getLogger("shipmentLogger");
@@ -31,58 +35,65 @@ public class HistoryLogger {
     private SimpleLayout layout = new SimpleLayout();
 
     private FileAppender appender_loginlogout;
+    private FileAppender appender_order;
+    private FileAppender appender_ship;
 
-    public HistoryLogger()
+    private HistoryLogger()
     {
         try {
             appender_loginlogout = new FileAppender(layout, log_loginlogoutFile, true);
         } catch (Exception e) {
             System.out.println("HistoryLogger: "+ e);
         }
-    }
-
-    public void logLogin(String UID, Timestamp timeLogin) {
-
-        loginLogger.addAppender(appender_loginlogout);
-        loginLogger.info(timeLogin.toString()+"    user id:"+UID+"  -log in");
-
-    }
 
 
-    public void logLogout(String UID, Timestamp timeLogout) {
-
-
-        loginLogger.addAppender(appender_loginlogout);
-        loginLogger.info(timeLogout.toString()+"    user id:"+UID+"  -log out");
-    }
-
-
-    public void logOrder(String UID, Timestamp time, int orderNumber) {
-
-        FileAppender appender_order=null;
         try {
             appender_order = new FileAppender(layout, log_orderFile, true);
         } catch (Exception e) {
             System.out.println("HistoryLogger: "+ e);
         }
 
-        orderLogger.addAppender(appender_order);
-        orderLogger.info(time.toString()+"    user id:"+UID+"  order number:"+
-                orderNumber+"  -make order");
-    }
-
-
-    public void logShipping(Timestamp time, int orderNumber) {
-
-        FileAppender appender_ship=null;
         try {
             appender_ship = new FileAppender(layout, log_shipmentFile, true);
         } catch (Exception e) {
             System.out.println("HistoryLogger: "+ e);
         }
 
+    }
+
+
+    public static HistoryLogger getInstance() {
+        return INSTANCE;
+    }
+
+    public void logLogin(String UID, String timeLogin) {
+
+        loginLogger.addAppender(appender_loginlogout);
+        loginLogger.info(timeLogin+"    user id:"+UID+"  -log in");
+        System.out.println(timeLogin+"    user id:"+UID+"  -log in");
+    }
+
+
+    public void logLogout(String UID, String timeLogout) {
+
+
+        loginLogger.addAppender(appender_loginlogout);
+        loginLogger.info(timeLogout+"    user id:"+UID+"  -log out");
+    }
+
+
+    public void logOrder(String UID, String time, int orderNumber) {
+        
+        orderLogger.addAppender(appender_order);
+        orderLogger.info(time+"    user id:"+UID+"  order number:"+
+                orderNumber+"  -make order");
+    }
+
+
+    public void logShipping(String time, int orderNumber) {
+
         shipmentLogger.addAppender(appender_ship);
-        shipmentLogger.info(time.toString()+"  order number:"+
+        shipmentLogger.info(time+"  order number:"+
                 orderNumber+"  -make shipment");
     }
 
