@@ -28,8 +28,14 @@ public class TransactionManager extends UnicastRemoteObject implements ITransact
     public void addOrder(String order_date, String first_name, String last_name, String address, String phone, float total_cost, boolean shipped, Vector<String> product_id, Vector<String> description, Vector<Float> item_price, String UID, String pwd)
     {
         System.out.println("Received addOrder transaction: " + order_date);
-        OrderManager order = new OrderManager();
-        order.addOrder( order_date,  first_name,  last_name,  address,  phone,  total_cost,  (shipped? 1 : 0) , product_id, description,  item_price,  UID, pwd);
+       try
+       {
+            OrderManager order = new OrderManager();
+            order.addOrder( order_date,  first_name,  last_name,  address,  phone,  total_cost,  (shipped? 1 : 0) , product_id, description,  item_price,  UID, pwd);
+        }
+       catch(Exception e) {
+           System.out.println("Error calling OrderManager.addOrder: " + e);
+       }
 
     }
 
@@ -40,25 +46,25 @@ public class TransactionManager extends UnicastRemoteObject implements ITransact
         shipment.setOrderToShipped( new Integer(orderNumber).toString(),  UID,  pwd);
     }
 
-   public Vector<String> getTrees()
+   public Vector<String> getTrees(String UID, String pwd)
    {
        System.out.println("Received getTrees");
-       return invMgr.getTrees();
+       return invMgr.getTrees(UID,pwd);
 
    }
 
-   public Vector<String> getSeeds()
+   public Vector<String> getSeeds(String UID, String pwd)
    {
 
       System.out.println("Received getSeeds");
-      return invMgr.getSeeds();
+      return invMgr.getSeeds(UID,pwd);
    }
 
-   public Vector<String> getShrubs()
+   public Vector<String> getShrubs(String UID, String pwd)
    {
 
        System.out.println("Received getShrubs");
-       return invMgr.getShrubs();
+       return invMgr.getShrubs(UID,pwd);
    }
 
    public int t(){return 42;}

@@ -26,11 +26,28 @@ public class OrderManager {
             Vector<String> product_id, Vector<String> description,
             Vector<Float> item_price, String UID, String password)
     {
-        if(Authentication.login(UID, password))
+        System.out.println("Initializing  DBManager for" + UID + " password: " + password);
+        try
         {
-        DBManager dbManager = new DBManager();
-        dbManager.writeOrder(order_date,first_name,last_name,address,phone,total_cost, shipped, product_id, description, item_price);
-        }
+            boolean result = Authentication.login(UID, password);
+            System.out.println("Authentication result: " + result);
+
+            if(result)
+            {
+                DBManager dbManager = new DBManager();
+                dbManager.writeOrder(order_date,first_name,last_name,address,phone,total_cost, shipped, product_id, description, item_price);
+                System.out.println("Calling dbManager.writeOrder");
+            }
+            else
+            {
+                System.out.println("Authentication failed for " + UID + " With password " + password);
+            }
+
+       }
+       catch(Exception e) {
+           System.out.println("Error calling OrderManager.addOrder: " + e);
+       }
+
     }
 
 }

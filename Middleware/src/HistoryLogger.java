@@ -37,6 +37,7 @@ public class HistoryLogger {
         try {
             appender_loginlogout = new FileAppender(layout, log_loginlogoutFile, true);
         } catch (Exception e) {
+            System.out.println("HistoryLogger: "+ e);
         }
     }
 
@@ -62,6 +63,7 @@ public class HistoryLogger {
         try {
             appender_order = new FileAppender(layout, log_orderFile, true);
         } catch (Exception e) {
+            System.out.println("HistoryLogger: "+ e);
         }
 
         orderLogger.addAppender(appender_order);
@@ -76,6 +78,7 @@ public class HistoryLogger {
         try {
             appender_ship = new FileAppender(layout, log_shipmentFile, true);
         } catch (Exception e) {
+            System.out.println("HistoryLogger: "+ e);
         }
 
         shipmentLogger.addAppender(appender_ship);

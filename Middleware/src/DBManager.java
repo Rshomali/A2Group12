@@ -1,4 +1,4 @@
-package dbmanager;
+
 
 
 import java.sql.*;
@@ -65,12 +65,16 @@ public class DBManager {
                 //    SQLstatement = ("Select password from test WHERE userid='test');
 
                     res = s.executeQuery( "SELECT password FROM userinfo WHERE userid=\""+UID+"\"");
-
+                    int found = 0;
                     while (res.next())
                     {
+                       found++;
                        password = res.getString(1);
 
                     } // while
+
+                    if (found == 0)
+                        return null;
 
                     //System.out.println(res.getString(1));
                     //Display the data in the textarea
@@ -320,7 +324,7 @@ public Vector<String> getShrubs(){
                 address!=null && phone!=null && total_cost >=0
                 && shipped !=1 && product_id!=null
                 && description!=null && item_price!=null )){
-
+            System.out.println("dbManager.writeOrder 1");
             try
             {
                 msgString = ">> Establishing Driver...";
@@ -348,7 +352,7 @@ public Vector<String> getShrubs(){
 
             } // end try-catch
         }else {
-
+            System.out.println("dbManager.writeOrder 2");
             System.out.println("Error: order information");
             connectError = true;
 
@@ -356,7 +360,7 @@ public Vector<String> getShrubs(){
 /********************************************************/
         if (!connectError )
         {
-
+            System.out.println("dbManager.writeOrder 3");
             //making order####
             Calendar rightNow = Calendar.getInstance();
 
@@ -393,8 +397,11 @@ public Vector<String> getShrubs(){
 
             } // try
 
+            System.out.println("dbManager.writeOrder 4");
+
             if ( !executeError )
             {
+                System.out.println("dbManager.writeOrder 5");
                 try
                 {
                     SQLstatement = ( "INSERT INTO orders (order_date, " + "first_name, " +
@@ -428,6 +435,12 @@ public Vector<String> getShrubs(){
                 } // try
 
             } //execute error check
+
+
+
+
+
+
 /**********************************************************/
        
         if ( !connectError && !executeError )
@@ -462,7 +475,83 @@ public Vector<String> getShrubs(){
 
             } //for each line of text in order table
 
+
+            	try {
+				/*
+				 * Ok, so now we've got the order set up, lets reduce
+				 * the quantities available in the inventory. This isn't
+				 * really hard as long as we know that there are no
+				 * products with the same ID in the inventories tables.
+				 * We'll first guarantee that and then will take care
+				 * of reducint the quantities available in the
+				 * inventory.
+				 */
+				String[] invTables = { "seeds", "shrubs", "trees" };
+				String sql = "select p, count(*) from (";
+				boolean first = true;
+				for (String t : invTables) {
+					if (!first) {
+						sql += " union all ";
+					} else {
+						first = false;
+					}
+
+					sql += "select '" + t + "' as t, product_code as "
+							+ "p, description as d from inventory."
+							+ t;
+				}
+
+				sql += ") f group by p, d having(count(*)) > 1";
+				/* Don't you just ** love ** SQL? ... */
+
+				ResultSet rs = s.executeQuery(sql);
+				if (rs.next()) {
+					/* Trouble! */
+					throw new Exception("More than one product found "
+							+ "in more than one inventory table with "
+							+ "code = '" + rs.getString("p") + "' "
+							+ "and description = '" + rs.getString("d")
+							+ "'.");
+				}
+
+				/* Now, just perform the updates... */
+				for (String t : invTables) {
+					sql = "update inventory." + t + ", (select "
+							+ "product_id p, description d, count(*) q "
+							+ "from " + orderTableName + " group by "
+							+ "p, d) o set quantity = quantity "
+							+ "- o.q where product_code = p and "
+							+ "description = d";
+					/* Ahhh, can you live without join updates? :) */
+					s.executeUpdate(sql);
+
+					/*
+					 * If we wanted to be *really* sure we've done the
+					 * right thing we should at least check the total
+					 * number of updated rows to be sure that we've
+					 * updates the right number of products... anyway,
+					 * who cares? I'm not paying for wrong inventory
+					 * updates... am I?
+					 */
+				}
+
+				/*
+				 * We're not closing the statement because it looks noone is
+				 * closing anything around... we just let the garbage collector
+				 * do its work...
+				 */
+			} catch (Exception e) {
+				errString =  "\nProblem with inserting into table "
+						+ orderTableName + ":: " + e;
+				System.out.println(errString);
+			}
+
+
+
         }
+
+
+
 
 
 
