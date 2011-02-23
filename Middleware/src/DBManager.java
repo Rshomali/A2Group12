@@ -1,4 +1,3 @@
-
 import java.sql.*;
 import java.util.Calendar;
 import java.util.Vector;
@@ -1035,17 +1034,17 @@ public Vector<String> getShrubs(){
         {
             try
             {
-                msgString.add(">> Establishing Driver...");
+                msgString.add(">> Establishing Driver...\n");
 
                 //load JDBC driver class for MySQL
-                Class.forName( "com.mysql.jdbc.Driver" );
+                Class.forName( "com.mysql.jdbc.Driver\n" );
 
-                msgString.add(">> Setting up URL...");
+                msgString.add(">> Setting up URL...\n");
 
                 //define the data source
                 String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/inventory";
 
-                msgString.add(">> Establishing connection with: " + sourceURL + "...");
+                msgString.add(">> Establishing connection with: " + sourceURL + "...\n");
 
                 //create a connection to the db
                 DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
@@ -1087,7 +1086,7 @@ public Vector<String> getShrubs(){
                 executeUpdateVal = s.executeUpdate(SQLstatement);
 
                 // let the user know all went well
-                errString =  "\nINVENTORY UPDATED...";
+                errString =  "\nINVENTORY UPDATED...\n";
 
 
             } catch (Exception e) {
@@ -1103,4 +1102,167 @@ public Vector<String> getShrubs(){
         //If the execute when OK, then we lList the contents of the table
 
         }
+
+        // This button gets the selected line of text from the
+        // order list window jTextArea1. The line of text is parsed for the
+        // order number. Once the order number is parsed, then the order is
+        // retrieved from the orders database. The ordertabel field from the
+        // record contains the name of the table that has the items that make
+        // up the order. This table is opened and all the items are listed
+        // in jTextArea3.
+Vector<Vector<String> > getOrder(Integer orderID){
+
+        Boolean connectError = false;       // Error flag
+        Connection DBConn = null;           // MySQL connection handle
+        String errString = null;            // String for displaying errors
+        int beginIndex;                     // Parsing index
+        int endIndex;                       // Parsing index
+        Vector<String> msgString = new Vector<String>();        // String for displaying non-error messages
+
+        Vector<Vector<String>> msgmsgString = new Vector<Vector<String>>();
+
+        String orderSelection = null;       // Order selected from TextArea1
+        String orderTable = null;           // The name of the table containing the order items
+       // String orderID = null;              // Product ID pnemonic
+        String productDescription = null;   // Product description
+        ResultSet res = null;               // SQL query result set pointer
+        Statement s = null;                 // SQL statement pointer
+        Boolean orderBlank = false;         // False: order string is not blank
+        String SQLStatement;                // SQL query
+
+        // this is the selected line of text
+        //orderSelection =  jTextArea1.getSelectedText();
+
+       
+
+        // If an order was selected, then connect to the orderinfo database. In
+        // all normal situations this would be impossible to do since the select
+        // button is disabled until an order is selected... just in case the
+        // check is here.
+
+        if ( !orderBlank )
+        {
+            try
+            {
+                //System.out.println(">> Establishing Driver.../n");
+                
+                //load JDBC driver class for MySQL
+                Class.forName( "com.mysql.jdbc.Driver" );
+
+                //msgString.add(">> Setting up URL...\n");
+                
+                //define the data source
+                String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/orderinfo";
+
+                //msgString.add(">> Establishing connection with: " + sourceURL + "...\n");
+               
+                //create a connection to the db - note the default account is "remote"
+                //and the password is "remote_pass" - you will have to set this
+                //account up in your database
+                DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
+
+            } catch (Exception e) {
+
+                errString =  "\nProblem connecting to orderinfo database:: " + e;
+                connectError = true;
+
+            } // end try-catch
+
+        } // blank order check
+
+        if ( !connectError && !orderBlank )
+        {
+            try
+            {
+               
+                s = DBConn.createStatement();
+                SQLStatement = "SELECT * FROM orders WHERE order_id = " + orderID;
+                res = s.executeQuery( SQLStatement );
+
+                // Get the information from the database. Display the
+                // first and last name, address, phone number, address, and
+                // order date. Same the ordertable name - this is the name of
+                // the table that is created when an order is submitted that
+                // contains the list of order items.
+
+                while (res.next()) {
+
+                  orderTable = res.getString(9);         // name of table with list of items
+
+                  //msgString.ad(res.getString)
+                  msgString.add(res.getString(3));
+                  msgString.add(res.getString(4));
+                  msgString.add(res.getString(6));
+                  msgString.add(res.getString(2));
+                  msgString.add(res.getString(5));
+
+                  msgmsgString.add(msgString);
+                  /*
+                  jTextField2.setText(res.getString(3)); // first name
+                  jTextField3.setText(res.getString(4)); // last name
+                  jTextField4.setText(res.getString(6)); // phone
+                  jTextField5.setText(res.getString(2)); // order date
+                  jTextArea2.setText(res.getString(5));  // address
+*/
+                } // for each element in the return SQL query
+
+                // get the order items from the related order table
+                SQLStatement = "SELECT * FROM " + orderTable;
+                res = s.executeQuery( SQLStatement );
+
+
+                // list the items on the form that comprise the order
+                //jTextArea3.setText("");
+
+                while (res.next())
+                {
+                    Vector<String> temp = new Vector<String>();
+                    //temp.add(res.getString(1));
+                    //msgmsgString.add(temp);
+
+                    temp.add(res.getString(2));
+                                       
+                    temp.add(res.getString(3));
+                                      
+                    temp.add(res.getString(4));
+                    msgmsgString.add(temp);
+
+//                    temp.add("\n");
+//                    msgmsgString.add(temp);
+                    /*
+                            + ":  PRODUCT ID: " + res.getString(2) +
+                         "  DESCRIPTION: "+ res.getString(3) + "  PRICE $" + res.getString(4)+"\n");
+*/
+                   // jTextArea3.append(msgString + "\n");
+
+                } // while
+
+                // This global variable is used to update the record as shipped
+                //updateOrderID = Integer.parseInt(orderID);
+
+                // Update the form
+                //jButton1.setEnabled(true);
+               // msgString.add("RECORD RETRIEVED...");
+                //jTextArea4.setText(msgString);
+
+            } catch (Exception e) {
+
+                errString =  "\nProblem getting order items:: " + e;
+                //jTextArea1.append(errString);
+
+            } // end try-catch
+
+        } // connect and blank order check
+return msgmsgString;
+    }
+
+
+
+
+
+
+
+
+
+
 }
