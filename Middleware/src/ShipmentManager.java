@@ -13,11 +13,17 @@ public class ShipmentManager {
         manager.setOrderToShipped("order1298076900480", "test", "test");
     }
 
+    private DBManager dbManager;
+
+    public ShipmentManager()
+    {
+        dbManager = new DBManager();
+    }
+
     public void setOrderToShipped(String orderNumber, String UID, String pwd)
     {
         if(Authentication.login(UID, pwd))
         {
-            DBManager dbManager = new DBManager();
             try {
                 dbManager.setOrderToShipped(orderNumber);
             } catch (SQLException ex) {
@@ -28,4 +34,13 @@ public class ShipmentManager {
        logger.logShipping((new Timestamp(new java.util.Date().getTime())).toString(), Integer.parseInt(orderNumber));
     }
 
+    public Vector<String> getShippedOrders() throws RemoteException
+    {
+        return dbManager.getShippedOrders();
+    }
+
+    public Vector<String> getPendingOrders() throws RemoteException
+    {
+        return dbManager.getPendingOrders();
+    }
 }
