@@ -1,7 +1,4 @@
-package dbmanager;
 
-
-import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.Calendar;
 import java.util.Vector;
@@ -655,7 +652,7 @@ public Vector<String> getShrubs(){
 
 
 
-    public Vector<String> getPendingOrders()throws RemoteException{
+    public Vector<String> getPendingOrders(){
         Vector<String> msgString = new Vector<String>();        // String for displaying non-error messages
         String SQLstatement = null;     // String for building SQL queries
         Connection DBConn = null;       // MySQL connection handle
@@ -717,7 +714,7 @@ public Vector<String> getShrubs(){
         return msgString;
     }
     
-    public Vector<String> getShippedOrders() throws RemoteException{
+    public Vector<String> getShippedOrders(){
             Vector<String> msgString = new Vector<String>();        // String for displaying non-error messages
         String SQLstatement = null;     // String for building SQL queries
         Connection DBConn = null;       // MySQL connection handle
@@ -789,7 +786,7 @@ public Vector<String> getShrubs(){
     }
 
 
-        void addTree(String product_code, String product_description, Integer quantity, Float perUnitCost) throws RemoteException {
+        void addTree(String product_code, String product_description, Integer quantity, Float perUnitCost) {
 
         Boolean connectError = false;   // Error flag
         Connection DBConn = null;       // MySQL connection handle
@@ -919,7 +916,7 @@ public Vector<String> getShrubs(){
             }
         }
 
-        void addSeed(String product_code, String product_description, Integer quantity, Float perUnitCost) throws RemoteException {
+        void addSeed(String product_code, String product_description, Integer quantity, Float perUnitCost) {
 
         Boolean connectError = false;   // Error flag
         Connection DBConn = null;       // MySQL connection handle
@@ -1013,7 +1010,7 @@ public Vector<String> getShrubs(){
 
         }
 
-        void addShrubs(String product_code, String product_description, Integer quantity, Float perUnitCost) throws RemoteException {
+        void addShrubs(String product_code, String product_description, Integer quantity, Float perUnitCost){
 
         Boolean connectError = false;   // Error flag
         Connection DBConn = null;       // MySQL connection handle
