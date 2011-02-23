@@ -59,19 +59,19 @@ public class InventoryManager {
     }
     
     public void addTree(String product_code, String product_description, Integer quantity,
-               Float perUnitCost) throws RemoteException
+               Float perUnitCost) 
     {
         dbManager.addTree(product_code, product_description, quantity, perUnitCost);
     }
     
     public void addShrub(String product_code, String product_description, Integer quantity,
-            Float perUnitCost) throws RemoteException
+            Float perUnitCost) 
     {
-        dbManager.addShrub(product_code, product_description, quantity, perUnitCost);
+        dbManager.addShrubs(product_code, product_description, quantity, perUnitCost);
     }
     
     public void addSeed(String product_code, String product_description, Integer quantity,
-            Float perUnitCost) throws RemoteException
+            Float perUnitCost) 
     {
         dbManager.addSeed(product_code, product_description, quantity, perUnitCost);
     }

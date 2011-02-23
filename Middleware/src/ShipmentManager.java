@@ -1,6 +1,7 @@
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Vector;
 import java.util.logging.Level;
 
 
@@ -34,12 +35,12 @@ public class ShipmentManager {
        logger.logShipping((new Timestamp(new java.util.Date().getTime())).toString(), Integer.parseInt(orderNumber));
     }
 
-    public Vector<String> getShippedOrders() throws RemoteException
+    public Vector<String> getShippedOrders() 
     {
         return dbManager.getShippedOrders();
     }
 
-    public Vector<String> getPendingOrders() throws RemoteException
+    public Vector<String> getPendingOrders() 
     {
         return dbManager.getPendingOrders();
     }

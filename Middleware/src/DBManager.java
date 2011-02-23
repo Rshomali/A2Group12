@@ -602,6 +602,7 @@ public Vector<String> getShrubs(){
 
                 errString =  "\nError connecting to orderinfo database\n" + e;
                 //jTextArea3.append(errString);
+                System.out.println(errString);
                 connectError = true;
 
             } // end try-catch
@@ -610,42 +611,53 @@ public Vector<String> getShrubs(){
 
             errString =  "\nMissing customer information!!!\n";
             //jTextArea3.append(errString);
+            System.out.println(errString);
             connectError = true;
 
         }// customer data check
 
+        System.out.println("Updating shipped ....");
 
+        String order_table = null;
         if (!connectError )
         {
             String existedOrderNumber=null;
             ResultSet res = null;               // SQL query result set pointer
 
 
+             System.out.println("Checking if exists ....");
+
              s = DBConn.createStatement();
-            res = s.executeQuery( "SELECT ordertable FROM orders WHERE ordertable='"+orderNumber+"'");
+            res = s.executeQuery( "SELECT ordertable FROM orders WHERE order_id='"+orderNumber+"'");
 
                     while (res.next())
                     {
-                       existedOrderNumber = res.getString(1);
+                       order_table = res.getString(1);
 
                     } // while
 
-            if(existedOrderNumber==null) return false;
+            System.out.println("orderNumber = " + orderNumber + "Existed = " + existedOrderNumber);
+            if(order_table==null) return false;
+
+            System.out.println("Exists ....");
 
              try
             {
                 s = DBConn.createStatement();
-                SQLstatement = ( "UPDATE " + orderTableName +" SET shipped=1 WHERE ordertable=\""+orderNumber+"\"");
+                SQLstatement = ( "UPDATE " + orderTableName +" SET shipped=1 WHERE ordertable=\""+order_table+"\"");
                 executeUpdateVal = s.executeUpdate(SQLstatement);
+                System.out.println("Updated ....");
                  //userid=\""+UID+"\""
             }catch (Exception e) {
 
                 errString =  "\nProblem updating shiping info " + orderTableName +":: " + e;
+                System.out.println(errString);
                 executeError = true;
 
             }
 
         }
+         System.out.println("Connection error = " + connectError);
         return true;
     }
 
