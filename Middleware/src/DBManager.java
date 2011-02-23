@@ -1,6 +1,7 @@
+package dbmanager;
 
 
-
+import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.Calendar;
 import java.util.Vector;
@@ -16,7 +17,7 @@ public class DBManager {
      */
 
 
-    String SQLServerIP = "localhost";
+        String SQLServerIP = "localhost";
 	String remoteUserID = "remote";
 	String remoteUserPWD = "remote_pass";
 
@@ -226,7 +227,7 @@ public class DBManager {
 public Vector<String> getShrubs(){
 
 
-         Vector<String> msgString = new Vector<String>();        // String for displaying non-error messages
+        Vector<String> msgString = new Vector<String>();        // String for displaying non-error messages
         String SQLstatement = null;     // String for building SQL queries
         Connection DBConn = null;       // MySQL connection handle
         String errString = null;        // String for displaying errors
@@ -275,7 +276,7 @@ public Vector<String> getShrubs(){
                     msgString.add(res.getString(3));
                     msgString.add(" units in stock");
 					*/
-                    
+
                 } // while
 
                     //System.out.println(res.getString(1));
@@ -442,7 +443,7 @@ public Vector<String> getShrubs(){
 
 
 /**********************************************************/
-       
+
         if ( !connectError && !executeError )
         {
             // Now we create a table that contains the itemized list
@@ -450,7 +451,7 @@ public Vector<String> getShrubs(){
 
             for (int i = 0; i < product_id.size(); i++ )
             {
-        
+
                 if (description.elementAt(i)!=null )
                 {
                     SQLstatement = ( "INSERT INTO " + orderTableName +
@@ -461,14 +462,14 @@ public Vector<String> getShrubs(){
                     {
                         executeUpdateVal = s.executeUpdate(SQLstatement);
                         msgString =  "\nORDER SUBMITTED FOR: " + firstName + " " + lastName;
-        
+
                         // Clean up the display
 
                     } catch (Exception e) {
 
                         errString =  "\nProblem with inserting into table " + orderTableName +
                             ":: " + e;
-        
+
                     } // try
 
                 } // line length check
@@ -545,19 +546,8 @@ public Vector<String> getShrubs(){
 						+ orderTableName + ":: " + e;
 				System.out.println(errString);
 			}
-
-
-
+                 }
         }
-
-
-
-
-
-
-        }
-
-
 
     }
 
@@ -662,4 +652,458 @@ public Vector<String> getShrubs(){
         }
         return true;
     }
+
+
+
+    public Vector<String> getPendingOrders()throws RemoteException{
+        Vector<String> msgString = new Vector<String>();        // String for displaying non-error messages
+        String SQLstatement = null;     // String for building SQL queries
+        Connection DBConn = null;       // MySQL connection handle
+        String errString = null;        // String for displaying errors
+        Boolean connectError = false;   // Error flag
+
+        ResultSet res = null;               // SQL query result set pointer
+        Statement s = null;                 // SQL statement pointer
+        int shippedStatus;
+
+        if(true){
+            try{
+                              //load JDBC driver class for MySQL
+                    Class.forName( "com.mysql.jdbc.Driver" );
+                                      //define the data source
+                    String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/orderinfo";
+                    //create a connection to the db - note the default account is remoteUserID
+                    //and the password is remoteUserPWD - you will have to set this
+                    //account up in your database
+                    DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
+
+                } catch (Exception e) {
+
+                    errString =  "\nError connecting to orderinfo database\n" + e;
+                    System.out.println(errString);
+                    connectError = true;
+
+                } // end try-catch
+
+            if ( !connectError )
+            {
+                try
+                {
+                    s = DBConn.createStatement();
+
+                    res = s.executeQuery( "Select * from orders");
+
+                    while (res.next())
+                {
+                     shippedStatus = Integer.parseInt(res.getString(8));
+
+                    if ( shippedStatus == 0 ){
+
+                    msgString.add("ORDER # " + res.getString(1)+" : "+res.getString(2)+" : "+res.getString(3)+" : "+res.getString(4)+" : "+res.getString(5)+"\n");
+
+                    } // while
+
+                } // while
+
+                    //System.out.println(res.getString(1));
+                    //Display the data in the textarea
+                } catch (Exception e) {
+
+                    System.out.println(e.getMessage());
+                    System.out.println("Errors at getting password from orderinfo db");
+                } // end try-catch
+            } // if connect check
+        }
+        return msgString;
+    }
+    
+    public Vector<String> getShippedOrders() throws RemoteException{
+            Vector<String> msgString = new Vector<String>();        // String for displaying non-error messages
+        String SQLstatement = null;     // String for building SQL queries
+        Connection DBConn = null;       // MySQL connection handle
+        String errString = null;        // String for displaying errors
+        Boolean connectError = false;   // Error flag
+
+        ResultSet res = null;               // SQL query result set pointer
+        Statement s = null;                 // SQL statement pointer
+        int shippedStatus;
+
+        if(true){
+            try{
+                              //load JDBC driver class for MySQL
+                    Class.forName( "com.mysql.jdbc.Driver" );
+                                      //define the data source
+                    String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/orderinfo";
+                    //create a connection to the db - note the default account is remoteUserID
+                    //and the password is remoteUserPWD - you will have to set this
+                    //account up in your database
+                    DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
+
+                } catch (Exception e) {
+
+                    errString =  "\nError connecting to orderinfo database\n" + e;
+                    System.out.println(errString);
+                    connectError = true;
+
+                } // end try-catch
+
+            if ( !connectError )
+            {
+                try
+                {
+                    s = DBConn.createStatement();
+
+                    res = s.executeQuery( "Select * from orders");
+
+                    while (res.next())
+                {
+                     shippedStatus = Integer.parseInt(res.getString(8));
+
+                    if ( shippedStatus == 1 ){
+                    msgString.add("SHIPPED ORDER # " + res.getString(1)+" : "+res.getString(2)+" : "+res.getString(3)+" : "+res.getString(4)+"\n");
+
+                    } // while
+
+                } // while
+
+                    //System.out.println(res.getString(1));
+                    //Display the data in the textarea
+                } catch (Exception e) {
+
+                    System.out.println(e.getMessage());
+                    System.out.println("Errors at getting password from orderinfo db");
+                } // end try-catch
+            } // if connect check
+        }
+        return msgString;
+    
+
+        /*
+        ( "INSERT INTO trees (product_code, " +
+                            "description, quantity, price) VALUES ( '" +
+                            productID + "', " + "'" + description + "', " +
+                            quantity + ", " + perUnitCost + ");");
+
+        */
+
+    }
+
+
+        void addTree(String product_code, String product_description, Integer quantity, Float perUnitCost) throws RemoteException {
+
+        Boolean connectError = false;   // Error flag
+        Connection DBConn = null;       // MySQL connection handle
+        String description;             // Tree, seed, or shrub description
+        Boolean executeError = false;   // Error flag
+        String errString = null;        // String for displaying errors
+        int executeUpdateVal;           // Return value from execute indicating effected rows
+        Boolean fieldError = false;      // Error flag
+        Vector<String> msgString = new Vector<String>();        // String for displaying non-error messages
+        ResultSet res = null;           // SQL query result set pointer
+        String tableSelected = null;    // String used to determine which data table to use
+        //Integer quantity;               // Quantity of trees, seeds, or shrubs
+        //Float perUnitCost;              // Cost per tree, seed, or shrub unit
+        String productID = null;        // Product id of tree, seed, or shrub
+        java.sql.Statement s = null;    // SQL statement pointer
+        String SQLstatement = null;     // String for building SQL queries
+
+       
+        //Now, if there was no error in the data fields, we try to
+        //connect to the database.
+        if ( !connectError )
+        {
+            try
+            {
+                msgString.add(">> Establishing Driver...");
+                
+                //load JDBC driver class for MySQL
+                Class.forName( "com.mysql.jdbc.Driver" );
+
+                msgString.add(">> Setting up URL...");
+                
+                //define the data source
+                String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/inventory";
+
+                msgString.add(">> Establishing connection with: " + sourceURL + "...");
+                
+                //create a connection to the db
+                DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
+
+            } catch (Exception e) {
+
+                errString =  "\nProblem connecting to database:: " + e;
+            
+                connectError = true;
+
+            } // end try-catch
+        } // fieldError check
+
+        //If there is not connection error, then we form the SQL statement
+        //and then execute it.
+
+        if (!connectError && !fieldError )
+        {
+            try
+            {
+                // get the data from the text fields
+            
+
+                // create an SQL statement variable and create the INSERT
+                // query to insert the new inventory into the database
+
+                s = DBConn.createStatement();
+
+                // if trees are selected then insert inventory into trees
+                // table
+               
+                    SQLstatement = ( "INSERT INTO trees (product_code, " +
+                            "description, quantity, price) VALUES ( '" +
+                            product_code + "', " + "'" + product_description + "', " +
+                            quantity + ", " + perUnitCost + ");");
+               
+               
+                // execute the update
+                executeUpdateVal = s.executeUpdate(SQLstatement);
+
+                // let the user know all went well
+                errString =  "\nINVENTORY UPDATED...";
+               
+
+            } catch (Exception e) {
+
+                errString =  "\nProblem with insert:: " + e;
+                System.out.println(errString);//jTextArea1.append(errString);
+                executeError = true;
+
+            } // try
+
+        } //execute SQL check
+
+        //If the execute when OK, then we lList the contents of the table
+
+        if ( !connectError && !fieldError && !executeError )
+        {
+            try
+            {
+                // create another SQL statement
+                s = DBConn.createStatement();
+
+                // now we build a query to list the inventory table contents
+                // for the user
+                // ... here is the SQL for trees
+                
+                    res = s.executeQuery( "Select * from trees" );
+                    tableSelected = "TREE";
+                
+
+                // Now we list the inventory for the selected table
+               // jTextArea1.setText("");
+                while (res.next())
+                {
+
+                    msgString.add(tableSelected+" >>" + res.getString(1)+" :: "+res.getString(2)+" :: $"+res.getString(3)+" :: "+res.getString(4));
+                    /*
+                    msgString = tableSelected + ">> " + res.getString(1) + " :: " + res.getString(2) +
+                            " :: "+ res.getString(3) + " :: " + res.getString(4);
+                   // jTextArea1.append("\n"+msgString);
+*/
+                } // while
+
+            } catch(Exception e) {
+
+                errString =  "\nProblem with " + tableSelected +" query:: " + e;
+                //jTextArea1.append(errString);
+                executeError = true;
+
+                } // try
+            }
+        }
+
+        void addSeed(String product_code, String product_description, Integer quantity, Float perUnitCost) throws RemoteException {
+
+        Boolean connectError = false;   // Error flag
+        Connection DBConn = null;       // MySQL connection handle
+        String description;             // Tree, seed, or shrub description
+        Boolean executeError = false;   // Error flag
+        String errString = null;        // String for displaying errors
+        int executeUpdateVal;           // Return value from execute indicating effected rows
+        Boolean fieldError = false;      // Error flag
+        Vector<String> msgString = new Vector<String>();        // String for displaying non-error messages
+        ResultSet res = null;           // SQL query result set pointer
+        String tableSelected = null;    // String used to determine which data table to use
+        //Integer quantity;               // Quantity of trees, seeds, or shrubs
+        //Float perUnitCost;              // Cost per tree, seed, or shrub unit
+        String productID = null;        // Product id of tree, seed, or shrub
+        java.sql.Statement s = null;    // SQL statement pointer
+        String SQLstatement = null;     // String for building SQL queries
+
+
+        //Now, if there was no error in the data fields, we try to
+        //connect to the database.
+        if ( !connectError )
+        {
+            try
+            {
+                msgString.add(">> Establishing Driver...");
+
+                //load JDBC driver class for MySQL
+                Class.forName( "com.mysql.jdbc.Driver" );
+
+                msgString.add(">> Setting up URL...");
+
+                //define the data source
+                String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/inventory";
+
+                msgString.add(">> Establishing connection with: " + sourceURL + "...");
+
+                //create a connection to the db
+                DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
+
+            } catch (Exception e) {
+
+                errString =  "\nProblem connecting to database:: " + e;
+
+                connectError = true;
+
+            } // end try-catch
+        } // fieldError check
+
+        //If there is not connection error, then we form the SQL statement
+        //and then execute it.
+
+        if (!connectError && !fieldError )
+        {
+            try
+            {
+                // get the data from the text fields
+
+
+                // create an SQL statement variable and create the INSERT
+                // query to insert the new inventory into the database
+
+                s = DBConn.createStatement();
+
+                // if trees are selected then insert inventory into trees
+                // table
+
+                    SQLstatement = ( "INSERT INTO seeds (product_code, " +
+                            "description, quantity, price) VALUES ( '" +
+                            product_code + "', " + "'" + product_description + "', " +
+                            quantity + ", " + perUnitCost + ");");
+
+                // System.out.println("say hey");
+                // execute the update
+                executeUpdateVal = s.executeUpdate(SQLstatement);
+
+                // let the user know all went well
+                errString =  "\nINVENTORY UPDATED...";
+
+
+            } catch (Exception e) {
+
+                errString =  "\nProblem with insert:: " + e;
+                System.out.println(errString);//jTextArea1.append(errString);
+                executeError = true;
+
+            } // try
+
+        } //execute SQL check
+
+        //If the execute when OK, then we lList the contents of the table
+
+        }
+
+        void addShrubs(String product_code, String product_description, Integer quantity, Float perUnitCost) throws RemoteException {
+
+        Boolean connectError = false;   // Error flag
+        Connection DBConn = null;       // MySQL connection handle
+        String description;             // Tree, seed, or shrub description
+        Boolean executeError = false;   // Error flag
+        String errString = null;        // String for displaying errors
+        int executeUpdateVal;           // Return value from execute indicating effected rows
+        Boolean fieldError = false;      // Error flag
+        Vector<String> msgString = new Vector<String>();        // String for displaying non-error messages
+        ResultSet res = null;           // SQL query result set pointer
+        String tableSelected = null;    // String used to determine which data table to use
+        //Integer quantity;               // Quantity of trees, seeds, or shrubs
+        //Float perUnitCost;              // Cost per tree, seed, or shrub unit
+        String productID = null;        // Product id of tree, seed, or shrub
+        java.sql.Statement s = null;    // SQL statement pointer
+        String SQLstatement = null;     // String for building SQL queries
+
+
+        //Now, if there was no error in the data fields, we try to
+        //connect to the database.
+        if ( !connectError )
+        {
+            try
+            {
+                msgString.add(">> Establishing Driver...");
+
+                //load JDBC driver class for MySQL
+                Class.forName( "com.mysql.jdbc.Driver" );
+
+                msgString.add(">> Setting up URL...");
+
+                //define the data source
+                String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/inventory";
+
+                msgString.add(">> Establishing connection with: " + sourceURL + "...");
+
+                //create a connection to the db
+                DBConn = DriverManager.getConnection(sourceURL,remoteUserID,remoteUserPWD);
+
+            } catch (Exception e) {
+
+                errString =  "\nProblem connecting to database:: " + e;
+
+                connectError = true;
+
+            } // end try-catch
+        } // fieldError check
+
+        //If there is not connection error, then we form the SQL statement
+        //and then execute it.
+
+        if (!connectError && !fieldError )
+        {
+            try
+            {
+                // get the data from the text fields
+
+
+                // create an SQL statement variable and create the INSERT
+                // query to insert the new inventory into the database
+
+                s = DBConn.createStatement();
+
+                // if trees are selected then insert inventory into trees
+                // table
+
+                    SQLstatement = ( "INSERT INTO shrubs (product_code, " +
+                            "description, quantity, price) VALUES ( '" +
+                            product_code + "', " + "'" + product_description + "', " +
+                            quantity + ", " + perUnitCost + ");");
+
+           
+                // execute the update
+                executeUpdateVal = s.executeUpdate(SQLstatement);
+
+                // let the user know all went well
+                errString =  "\nINVENTORY UPDATED...";
+
+
+            } catch (Exception e) {
+
+                errString =  "\nProblem with insert:: " + e;
+                System.out.println(errString);//jTextArea1.append(errString);
+                executeError = true;
+
+            } // try
+
+        } //execute SQL check
+
+        //If the execute when OK, then we lList the contents of the table
+
+        }
 }
